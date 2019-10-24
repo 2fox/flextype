@@ -96,6 +96,10 @@ class SiteController extends Controller
         // Set template path for current entry
         $path = 'themes/' . $this->registry->get('settings.theme') . '/' . (empty($this->entry['template']) ? 'templates/default' : 'templates/' . $this->entry['template']) . '.html';
 
+        if(file_exists(PATH['site'] . '/' . $path . '.twig')){
+            $path .= '.twig';
+        }
+
         if ($is_entry_not_found) {
             return $this->view->render($response->withStatus(404), $path, ['entry' => $this->entry, 'query' => $query]);
         }
