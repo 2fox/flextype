@@ -219,12 +219,18 @@ $flextype['entries'] = static function ($container) {
 /**
  * Add view service to Flextype container
  */
-$flextype['view'] = static function ($container) {
+$flextype['view'] = static function ($container) use ($registry) {
     // Get twig settings
     $twigSettings = $container->get('settings')['twig'];
 
     // Create Twig View
-    $view = new Twig(PATH['site'], $twigSettings);
+    $view = new Twig(
+        [
+            PATH['site'],
+            PATH['site'] . '/themes/' . $registry->get('settings.theme') . '/templates'
+        ],
+        $twigSettings
+    );
 
     // Instantiate
     $router = $container->get('router');
@@ -238,6 +244,9 @@ $flextype['view'] = static function ($container) {
 
     // Add Entries Twig Extension
     $view->addExtension(new EntriesTwigExtension($container));
+
+    // Add Fieldsets Twig Extension
+    $view->addExtension(new FieldsetsTwigExtension($container));
 
     // Add Emitter Twig Extension
     $view->addExtension(new EmitterTwigExtension($container));
